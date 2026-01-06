@@ -31,6 +31,25 @@ export const useArticles = (playlistId?: string) => {
   });
 };
 
+export const useArticle = (id?: string) => {
+  return useQuery({
+    queryKey: ['article', id],
+    queryFn: async () => {
+      if (!id) return null;
+      
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data as Article;
+    },
+    enabled: !!id,
+  });
+};
+
 export const useCreateArticle = () => {
   const queryClient = useQueryClient();
   
@@ -47,6 +66,46 @@ export const useCreateArticle = () => {
       
       if (error) throw error;
       return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['articles'] });
+    },
+  });
+};
+
+export const useUpdateArticle = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ id, title, body, playlist_id }: { id: string; title: string; body: string; playlist_id: string | null }) => {
+      const { data, error } = await supabase
+        .from('articles')
+        .update({ title, body, playlist_id })
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['articles'] });
+      queryClient.invalidateQueries({ queryKey: ['article', variables.id] });
+    },
+  });
+};
+
+export const useDeleteArticle = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('articles')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['articles'] });
