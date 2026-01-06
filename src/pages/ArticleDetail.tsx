@@ -6,6 +6,7 @@ import { useArticle } from '@/hooks/useArticles';
 import { EditArticleModal } from '@/components/EditArticleModal';
 import { AuthGuard } from '@/components/AuthGuard';
 import { Header } from '@/components/Header';
+import { isValidImageUrl } from '@/lib/security';
 
 const ArticleDetailContent = () => {
   const { id } = useParams<{ id: string }>();
@@ -67,15 +68,20 @@ const ArticleDetailContent = () => {
             <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg">
               {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
                 const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
-                if (imageMatch) {
+                if (imageMatch && isValidImageUrl(imageMatch[2])) {
                   return (
                     <img
                       key={index}
                       src={imageMatch[2]}
                       alt={imageMatch[1] || 'Article image'}
                       className="max-w-full h-auto rounded-lg my-4"
+                      referrerPolicy="no-referrer"
                     />
                   );
+                }
+                // If it looks like image markdown but URL is invalid, show as text
+                if (imageMatch) {
+                  return <span key={index}>{part}</span>;
                 }
                 return <span key={index}>{part}</span>;
               })}

@@ -64,12 +64,17 @@ const Auth = () => {
         toast.success('Account created successfully');
       }
     } catch (error: any) {
-      if (error.message.includes('User already registered')) {
+      // Log for debugging in development only
+      if (import.meta.env.DEV) {
+        console.error('Auth error:', error);
+      }
+      
+      if (error.message?.includes('User already registered')) {
         toast.error('This email is already registered. Please log in.');
-      } else if (error.message.includes('Invalid login credentials')) {
+      } else if (error.message?.includes('Invalid login credentials')) {
         toast.error('Invalid email or password');
       } else {
-        toast.error(error.message);
+        toast.error('Authentication failed. Please try again.');
       }
     } finally {
       setLoading(false);
