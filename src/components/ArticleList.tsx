@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Pencil } from 'lucide-react';
 import { useArticles, Article } from '@/hooks/useArticles';
@@ -9,11 +9,24 @@ const PREVIEW_LENGTH = 150;
 
 interface ArticleListProps {
   playlistId?: string;
+  searchQuery?: string;
 }
 
-export const ArticleList = ({ playlistId }: ArticleListProps) => {
+export const ArticleList = ({ playlistId, searchQuery = '' }: ArticleListProps) => {
   const { data: articles, isLoading } = useArticles(playlistId);
   const [editArticle, setEditArticle] = useState<Article | null>(null);
+
+  const filteredArticles = useMemo(() => {
+    if (!articles) return [];
+    if (!searchQuery.trim()) return articles;
+    
+    const query = searchQuery.toLowerCase();
+    return articles.filter(
+      (article) =>
+        article.title.toLowerCase().includes(query) ||
+        article.body.toLowerCase().includes(query)
+    );
+  }, [articles, searchQuery]);
 
   if (isLoading) {
     return <p className="text-muted-foreground text-sm">Loading articles...</p>;
@@ -23,10 +36,14 @@ export const ArticleList = ({ playlistId }: ArticleListProps) => {
     return <p className="text-muted-foreground text-sm font-serif">No articles yet.</p>;
   }
 
+  if (filteredArticles.length === 0) {
+    return <p className="text-muted-foreground text-sm font-serif">No articles found.</p>;
+  }
+
   return (
     <>
       <div className="space-y-8">
-        {articles.map((article) => (
+        {filteredArticles.map((article) => (
           <ArticleCard 
             key={article.id} 
             article={article} 
@@ -45,10 +62,12 @@ export const ArticleList = ({ playlistId }: ArticleListProps) => {
 };
 
 const ArticleCard = ({ article, onEdit }: { article: Article; onEdit: () => void }) => {
-  const isLong = article.body.length > PREVIEW_LENGTH;
+  // Strip image markdown for preview
+  const textOnly = article.body.replace(/\!\[.*?\]\(.*?\)/g, '').trim();
+  const isLong = textOnly.length > PREVIEW_LENGTH;
   const preview = isLong 
-    ? article.body.slice(0, PREVIEW_LENGTH).trim() + '...' 
-    : article.body;
+    ? textOnly.slice(0, PREVIEW_LENGTH).trim() + '...' 
+    : textOnly;
 
   return (
     <article className="border-b border-border pb-6 group">
@@ -72,7 +91,7 @@ const ArticleCard = ({ article, onEdit }: { article: Article; onEdit: () => void
         </button>
       </div>
       
-      <p className="font-serif text-foreground/80 whitespace-pre-wrap leading-relaxed">
+      <p className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed">
         {preview}
       </p>
       

@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ArticleDetail from "./pages/ArticleDetail";
+import CreateArticle from "./pages/CreateArticle";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/app" element={<Index />} />
+        <Route path="/app/new" element={<CreateArticle />} />
         <Route path="/app/article/:id" element={<ArticleDetail />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<NotFound />} />
