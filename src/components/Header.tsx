@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 
 export const Header = () => {
@@ -13,14 +14,17 @@ export const Header = () => {
   return (
     <header className="flex items-center justify-between mb-12">
       <h1 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">Notebook</h1>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={handleLogout}
-        className="font-mono text-xs text-muted-foreground hover:text-foreground"
-      >
-        Logout
-      </Button>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleLogout}
+          className="font-mono text-xs text-muted-foreground hover:text-foreground"
+        >
+          Logout
+        </Button>
+      </div>
     </header>
   );
 };

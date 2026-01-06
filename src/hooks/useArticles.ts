@@ -6,6 +6,7 @@ export interface Article {
   title: string;
   body: string;
   playlist_id: string | null;
+  user_id: string;
   created_at: string;
 }
 
@@ -35,9 +36,12 @@ export const useCreateArticle = () => {
   
   return useMutation({
     mutationFn: async ({ title, body, playlist_id }: { title: string; body: string; playlist_id: string | null }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+      
       const { data, error } = await supabase
         .from('articles')
-        .insert({ title, body, playlist_id })
+        .insert({ title, body, playlist_id, user_id: user.id })
         .select()
         .single();
       

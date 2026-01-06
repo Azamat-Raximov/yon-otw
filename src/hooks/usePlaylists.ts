@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Playlist {
   id: string;
   name: string;
+  user_id: string;
   created_at: string;
 }
 
@@ -27,9 +28,12 @@ export const useCreatePlaylist = () => {
   
   return useMutation({
     mutationFn: async (name: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+      
       const { data, error } = await supabase
         .from('playlists')
-        .insert({ name })
+        .insert({ name, user_id: user.id })
         .select()
         .single();
       
