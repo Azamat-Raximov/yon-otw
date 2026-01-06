@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Lock, Palette } from 'lucide-react';
+import { BookOpen, Lock, Palette, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Landing = () => {
@@ -29,7 +29,17 @@ const Landing = () => {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mt-16">
+        <div className="grid md:grid-cols-4 gap-8 mt-16">
+          <div className="space-y-3 text-center">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+              <Globe className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-semibold text-foreground">Access Anywhere</h3>
+            <p className="text-sm text-muted-foreground">
+              Your notes live on the web. Access them from any device, anywhere.
+            </p>
+          </div>
+
           <div className="space-y-3 text-center">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <BookOpen className="w-6 h-6 text-primary" />
@@ -62,8 +72,9 @@ const Landing = () => {
         </div>
       </main>
 
-      <footer className="text-center py-8 text-sm text-muted-foreground">
+      <footer className="text-center py-8 text-sm text-muted-foreground space-y-1">
         <p>Start writing today. It's free.</p>
+        <p className="text-xs">Developed by Azamat Raximov</p>
       </footer>
     </div>
   );
