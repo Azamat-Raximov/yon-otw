@@ -7,7 +7,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="flex items-center justify-between px-6 py-4 max-w-4xl mx-auto">
-        <h1 className="text-xl font-semibold text-foreground">Notebook</h1>
+        <h1 className="text-xl font-semibold text-foreground">YON</h1>
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <Button asChild variant="ghost">
@@ -19,10 +19,10 @@ const Landing = () => {
       <main className="max-w-4xl mx-auto px-6 py-24">
         <div className="text-center space-y-6 mb-20">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-            Your personal space for thoughts
+            Your Own Notebook
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            A minimal, distraction-free notebook for capturing ideas, writing notes, and organizing your thoughts into playlists.
+            A minimal, distraction-free space for capturing ideas, writing notes, and organizing your thoughts into playlists.
           </p>
           <Button asChild size="lg" className="mt-4">
             <Link to="/auth">Get Started</Link>

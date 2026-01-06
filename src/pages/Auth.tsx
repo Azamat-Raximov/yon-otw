@@ -80,7 +80,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <header className="mb-8 text-center">
-          <h1 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">Notebook</h1>
+          <h1 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">YON</h1>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
