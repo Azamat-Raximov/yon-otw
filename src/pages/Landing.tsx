@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Lock, Palette, Globe } from 'lucide-react';
+import { BookOpen, Lock, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Landing = () => {
@@ -29,7 +29,7 @@ const Landing = () => {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8 mt-16">
+        <div className="grid md:grid-cols-3 gap-8 mt-16">
           <div className="space-y-3 text-center">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Globe className="w-6 h-6 text-primary" />
@@ -46,7 +46,7 @@ const Landing = () => {
             </div>
             <h3 className="font-semibold text-foreground">Simple Writing</h3>
             <p className="text-sm text-muted-foreground">
-              Focus on what matters. Write your thoughts without distractions.
+              Focus on what matters. Clean interface with dark and light modes.
             </p>
           </div>
 
@@ -57,16 +57,6 @@ const Landing = () => {
             <h3 className="font-semibold text-foreground">Private & Secure</h3>
             <p className="text-sm text-muted-foreground">
               Your notes are yours alone. Only you can see what you write.
-            </p>
-          </div>
-
-          <div className="space-y-3 text-center">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <Palette className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-semibold text-foreground">Dark & Light</h3>
-            <p className="text-sm text-muted-foreground">
-              Switch between themes for comfortable reading anytime.
             </p>
           </div>
         </div>
