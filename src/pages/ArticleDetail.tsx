@@ -64,9 +64,22 @@ const ArticleDetailContent = () => {
           </time>
           
           <div className="mt-8">
-            <p className="font-serif text-foreground/80 whitespace-pre-wrap leading-relaxed text-lg">
-              {article.body}
-            </p>
+            <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg">
+              {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
+                const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
+                if (imageMatch) {
+                  return (
+                    <img
+                      key={index}
+                      src={imageMatch[2]}
+                      alt={imageMatch[1] || 'Article image'}
+                      className="max-w-full h-auto rounded-lg my-4"
+                    />
+                  );
+                }
+                return <span key={index}>{part}</span>;
+              })}
+            </div>
           </div>
         </article>
 
