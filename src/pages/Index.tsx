@@ -1,29 +1,32 @@
-import { NewPostForm } from '@/components/NewPostForm';
-import { PlaylistList } from '@/components/PlaylistList';
+import { useState } from 'react';
+import { Header } from '@/components/Header';
+import { PlaylistTabs } from '@/components/PlaylistTabs';
 import { ArticleList } from '@/components/ArticleList';
+import { CreateArticleModal } from '@/components/CreateArticleModal';
+import { AuthGuard } from '@/components/AuthGuard';
 
 const Index = () => {
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        <header className="mb-12">
-          <h1 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">Notebook</h1>
-        </header>
-        
-        <main className="space-y-12">
-          <NewPostForm />
+    <AuthGuard>
+      <div className="min-h-screen bg-background">
+        <div className="max-w-2xl mx-auto px-6 py-12">
+          <Header />
           
-          <section>
-            <PlaylistList />
-          </section>
+          <main className="space-y-6">
+            <PlaylistTabs
+              selectedPlaylistId={selectedPlaylistId}
+              onSelectPlaylist={setSelectedPlaylistId}
+            />
+            
+            <ArticleList playlistId={selectedPlaylistId ?? undefined} />
+          </main>
           
-          <section>
-            <h2 className="font-mono text-sm text-muted-foreground uppercase tracking-wide mb-6">All Articles</h2>
-            <ArticleList />
-          </section>
-        </main>
+          <CreateArticleModal />
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 };
 
