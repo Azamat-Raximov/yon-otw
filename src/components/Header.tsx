@@ -42,7 +42,7 @@ export const Header = ({
             onClick={handleLogout}
             className="font-mono text-xs text-muted-foreground hover:text-foreground"
           >
-            ◂ Logout
+            ⏻ Logout
           </Button>
         </div>
       </div>
@@ -64,7 +64,7 @@ export const Header = ({
           onClick={handleLogout}
           className="font-mono text-xs text-muted-foreground hover:text-foreground"
         >
-          ◂ Logout
+          ⏻ Logout
         </Button>
       </div>
     </header>
