@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { PlaylistTabs } from '@/components/PlaylistTabs';
 import { ArticleSidebar } from '@/components/ArticleSidebar';
@@ -35,6 +36,7 @@ const Index = () => {
           {/* Sidebar */}
           <aside className="w-72 border-r border-border flex flex-col shrink-0">
             <div className="p-4 border-b border-border">
+              <Link to="/app" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors mb-4 block">YON</Link>
               <h1 className="font-mono text-sm text-muted-foreground uppercase tracking-widest mb-4">YON</h1>
               <Header 
                 showSearch 
