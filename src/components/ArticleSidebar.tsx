@@ -38,25 +38,29 @@ export const ArticleSidebar = ({
 
   return (
     <ScrollArea className="h-[calc(100vh-200px)]">
-      <div className="space-y-1 pr-4">
+      <div className="pr-4">
         {filteredArticles.map((article, index) => (
-          <button
-            key={article.id}
-            onClick={() => onSelectArticle(article.id)}
-            className={`w-full text-left p-3 rounded transition-colors opacity-0 animate-fade-in ${
-              selectedArticleId === article.id
-                ? 'bg-accent text-accent-foreground'
-                : 'hover:bg-accent/50'
-            }`}
-            style={{ animationDelay: `${index * 0.02}s` }}
-          >
-            <span className="font-mono text-xs text-muted-foreground block mb-1">
-              {index + 1}.
-            </span>
-            <span className="font-serif text-sm line-clamp-2 break-words">
-              {article.title}
-            </span>
-          </button>
+          <div key={article.id}>
+            <button
+              onClick={() => onSelectArticle(article.id)}
+              className={`w-full text-left p-3 rounded transition-colors opacity-0 animate-fade-in ${
+                selectedArticleId === article.id
+                  ? 'bg-accent text-accent-foreground'
+                  : 'hover:bg-accent/50'
+              }`}
+              style={{ animationDelay: `${index * 0.02}s` }}
+            >
+              <span className="font-mono text-xs text-muted-foreground block mb-1">
+                {index + 1}.
+              </span>
+              <span className="font-serif text-sm line-clamp-2 break-words">
+                {article.title}
+              </span>
+            </button>
+            {index < filteredArticles.length - 1 && (
+              <div className="border-b border-border my-1" />
+            )}
+          </div>
         ))}
       </div>
     </ScrollArea>
