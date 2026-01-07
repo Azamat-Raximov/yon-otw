@@ -40,7 +40,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
         </time>
         
         <div className="mt-8">
-          <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg">
+          <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
             {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
               const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
               if (imageMatch && isValidImageUrl(imageMatch[2])) {
