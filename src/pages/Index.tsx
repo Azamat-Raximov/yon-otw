@@ -38,7 +38,7 @@ const Index = () => {
     setSidebarOpen(false);
   };
 
-  const SidebarContent = () => (
+  const sidebarContent = (
     <>
       <div className="p-4 border-b border-border">
         <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors mb-4 block">YON</Link>
@@ -87,14 +87,14 @@ const Index = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-72 p-0 flex flex-col">
-                <SidebarContent />
+                {sidebarContent}
               </SheetContent>
             </Sheet>
           </div>
 
           {/* Desktop Sidebar */}
           <aside className="hidden md:flex w-72 border-r border-border flex-col shrink-0">
-            <SidebarContent />
+            {sidebarContent}
           </aside>
           
           {/* Main content */}
