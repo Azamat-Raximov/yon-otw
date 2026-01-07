@@ -43,11 +43,12 @@ export const ArticleList = ({ playlistId, searchQuery = '' }: ArticleListProps) 
   return (
     <>
       <div className="space-y-8">
-        {filteredArticles.map((article) => (
+        {filteredArticles.map((article, index) => (
           <ArticleCard 
             key={article.id} 
             article={article} 
             onEdit={() => setEditArticle(article)}
+            index={index}
           />
         ))}
       </div>
@@ -61,7 +62,7 @@ export const ArticleList = ({ playlistId, searchQuery = '' }: ArticleListProps) 
   );
 };
 
-const ArticleCard = ({ article, onEdit }: { article: Article; onEdit: () => void }) => {
+const ArticleCard = ({ article, onEdit, index }: { article: Article; onEdit: () => void; index: number }) => {
   // Strip image markdown for preview
   const textOnly = article.body.replace(/\!\[.*?\]\(.*?\)/g, '').trim();
   const isLong = textOnly.length > PREVIEW_LENGTH;
@@ -70,7 +71,10 @@ const ArticleCard = ({ article, onEdit }: { article: Article; onEdit: () => void
     : textOnly;
 
   return (
-    <article className="border-b border-border pb-6 group">
+    <article 
+      className="border-b border-border pb-6 group opacity-0 animate-fade-in"
+      style={{ animationDelay: `${index * 0.05}s` }}
+    >
       <time className="font-mono text-xs text-muted-foreground">
         {format(new Date(article.created_at), 'MMM d, yyyy')}
       </time>
