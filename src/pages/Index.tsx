@@ -16,7 +16,8 @@ const Index = () => {
           <Header 
             showSearch 
             searchQuery={searchQuery} 
-            onSearchChange={setSearchQuery} 
+            onSearchChange={setSearchQuery}
+            selectedPlaylistId={selectedPlaylistId}
           />
           
           <main className="space-y-6">

@@ -6,7 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between px-6 py-4 max-w-4xl mx-auto">
+      <header className="flex items-center justify-between px-6 py-4 max-w-4xl mx-auto animate-fade-in">
         <h1 className="text-xl font-semibold text-foreground">YON</h1>
         <div className="flex items-center gap-4">
           <ThemeToggle />
@@ -17,7 +17,7 @@ const Landing = () => {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-24">
-        <div className="text-center space-y-6 mb-20">
+        <div className="text-center space-y-6 mb-20 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
             Your Own Notebook
           </h2>
@@ -30,7 +30,7 @@ const Landing = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mt-16">
-          <div className="space-y-3 text-center">
+          <div className="space-y-3 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Globe className="w-6 h-6 text-primary" />
             </div>
@@ -40,7 +40,7 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="space-y-3 text-center">
+          <div className="space-y-3 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <BookOpen className="w-6 h-6 text-primary" />
             </div>
@@ -50,7 +50,7 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="space-y-3 text-center">
+          <div className="space-y-3 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <Lock className="w-6 h-6 text-primary" />
             </div>
@@ -62,7 +62,7 @@ const Landing = () => {
         </div>
       </main>
 
-      <footer className="text-center py-8 text-sm text-muted-foreground space-y-1">
+      <footer className="text-center py-8 text-sm text-muted-foreground space-y-1 animate-fade-in" style={{ animationDelay: '0.5s' }}>
         <p>Start writing today. It's free.</p>
         <p className="text-xs">Developed by Azamat Raximov</p>
       </footer>

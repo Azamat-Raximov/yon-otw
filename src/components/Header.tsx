@@ -2,15 +2,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { SearchBar } from '@/components/SearchBar';
+import { FileUploadButton } from '@/components/FileUploadButton';
 import { toast } from 'sonner';
 
 interface HeaderProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   showSearch?: boolean;
+  selectedPlaylistId?: string | null;
 }
 
-export const Header = ({ searchQuery = '', onSearchChange, showSearch = false }: HeaderProps) => {
+export const Header = ({ searchQuery = '', onSearchChange, showSearch = false, selectedPlaylistId }: HeaderProps) => {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -25,6 +27,7 @@ export const Header = ({ searchQuery = '', onSearchChange, showSearch = false }:
         {showSearch && onSearchChange && (
           <SearchBar value={searchQuery} onChange={onSearchChange} />
         )}
+        <FileUploadButton playlistId={selectedPlaylistId} />
         <ThemeToggle />
         <Button
           variant="ghost"
@@ -32,7 +35,7 @@ export const Header = ({ searchQuery = '', onSearchChange, showSearch = false }:
           onClick={handleLogout}
           className="font-mono text-xs text-muted-foreground hover:text-foreground"
         >
-          Logout
+          👋 Logout
         </Button>
       </div>
     </header>
