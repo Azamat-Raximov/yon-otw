@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SearchBar } from '@/components/SearchBar';
 import { FileUploadButton } from '@/components/FileUploadButton';
 import { toast } from 'sonner';
+import { LogOut } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery?: string;
@@ -40,9 +41,10 @@ export const Header = ({
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className="font-mono text-xs text-muted-foreground hover:text-foreground"
+            className="font-mono text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
           >
-            ⏻ Logout
+            <LogOut className="h-3 w-3" />
+            Logout
           </Button>
         </div>
       </div>
@@ -62,9 +64,10 @@ export const Header = ({
           variant="ghost"
           size="sm"
           onClick={handleLogout}
-          className="font-mono text-xs text-muted-foreground hover:text-foreground"
+          className="font-mono text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
         >
-          ⏻ Logout
+          <LogOut className="h-3 w-3" />
+          Logout
         </Button>
       </div>
     </header>
