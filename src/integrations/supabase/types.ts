@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           playlist_id: string | null
+          slug: string | null
           title: string
           user_id: string
         }
@@ -28,6 +29,7 @@ export type Database = {
           created_at?: string
           id?: string
           playlist_id?: string | null
+          slug?: string | null
           title: string
           user_id: string
         }
@@ -36,6 +38,7 @@ export type Database = {
           created_at?: string
           id?: string
           playlist_id?: string | null
+          slug?: string | null
           title?: string
           user_id?: string
         }
@@ -75,7 +78,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_slug: { Args: { title: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
