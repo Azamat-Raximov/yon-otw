@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { generateSlug } from '@/lib/slugify';
 
 export interface Article {
   id: string;
@@ -8,6 +9,7 @@ export interface Article {
   playlist_id: string | null;
   user_id: string;
   created_at: string;
+  slug: string | null;
 }
 
 export const useArticles = (playlistId?: string) => {
@@ -50,6 +52,25 @@ export const useArticle = (id?: string) => {
   });
 };
 
+export const useArticleBySlug = (slug?: string) => {
+  return useQuery({
+    queryKey: ['article-by-slug', slug],
+    queryFn: async () => {
+      if (!slug) return null;
+      
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data as Article | null;
+    },
+    enabled: !!slug,
+  });
+};
+
 export const useCreateArticle = () => {
   const queryClient = useQueryClient();
   
@@ -58,9 +79,27 @@ export const useCreateArticle = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
       
+      // Generate a unique slug
+      const baseSlug = generateSlug(title);
+      let slug = baseSlug;
+      let counter = 0;
+      
+      // Check for uniqueness
+      while (true) {
+        const { data: existing } = await supabase
+          .from('articles')
+          .select('id')
+          .eq('slug', slug)
+          .maybeSingle();
+        
+        if (!existing) break;
+        counter++;
+        slug = `${baseSlug}-${counter}`;
+      }
+      
       const { data, error } = await supabase
         .from('articles')
-        .insert({ title, body, playlist_id, user_id: user.id })
+        .insert({ title, body, playlist_id, user_id: user.id, slug })
         .select()
         .single();
       
