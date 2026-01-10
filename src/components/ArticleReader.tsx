@@ -21,7 +21,8 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
       return;
     }
     
-    const shareUrl = `${window.location.origin}/read/${article.slug}`;
+    // Always copy a stable, public URL (the editor/preview domain may not generate social previews)
+    const shareUrl = `https://yon-otw.lovable.app/read/${article.slug}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
