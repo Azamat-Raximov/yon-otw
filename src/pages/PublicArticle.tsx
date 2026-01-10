@@ -53,7 +53,8 @@ const PublicArticle = () => {
 
   const siteUrl = "https://yon-otw.lovable.app";
   const articleUrl = `${siteUrl}/read/${article?.slug}`;
-  const ogImageUrl = `${siteUrl}/og-image.jpg`;
+  // Use a new filename + version to force social platforms to refetch the image.
+  const ogImageUrl = `${siteUrl}/share-og.jpg?v=1`;
 
   return (
     <>

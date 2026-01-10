@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
 
     const siteUrl = "https://yon-otw.lovable.app";
     const articleUrl = `${siteUrl}/read/${article.slug}`;
-    const ogImageUrl = `${siteUrl}/og-image.jpg`;
+    const ogImageUrl = `${siteUrl}/share-og.jpg?v=1`;
 
     return new Response(
       JSON.stringify({
