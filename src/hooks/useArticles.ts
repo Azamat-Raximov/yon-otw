@@ -12,6 +12,16 @@ export interface Article {
   slug: string | null;
 }
 
+// Public article interface - excludes user_id for privacy
+export interface PublicArticle {
+  id: string;
+  title: string;
+  body: string;
+  playlist_id: string | null;
+  created_at: string;
+  slug: string;
+}
+
 export const useArticles = (playlistId?: string) => {
   return useQuery({
     queryKey: ['articles', playlistId],
@@ -58,14 +68,16 @@ export const useArticleBySlug = (slug?: string) => {
     queryFn: async () => {
       if (!slug) return null;
       
+      // Use the public_articles view which excludes user_id for privacy
+      // Using rpc-style query to avoid TypeScript issues with views not in types.ts
       const { data, error } = await supabase
-        .from('articles')
-        .select('*')
+        .from('public_articles' as 'articles')
+        .select('id, title, body, slug, created_at, playlist_id')
         .eq('slug', slug)
         .maybeSingle();
       
       if (error) throw error;
-      return data as Article | null;
+      return data as unknown as PublicArticle | null;
     },
     enabled: !!slug,
   });
