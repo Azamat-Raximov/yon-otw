@@ -53,9 +53,9 @@ Deno.serve(async (req) => {
       .trim()
       .substring(0, 160);
 
-    const siteUrl = "https://yon.lovable.app";
+    const siteUrl = "https://yon-otw.lovable.app";
     const articleUrl = `${siteUrl}/read/${article.slug}`;
-    const ogImageUrl = `${siteUrl}/og-image.png`;
+    const ogImageUrl = `${siteUrl}/og-image.png?v=2`;
 
     return new Response(
       JSON.stringify({
