@@ -23,10 +23,6 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    
-    console.log("Fetching article with slug:", slug);
-    console.log("Supabase URL:", supabaseUrl);
-    
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Fetch article from public_articles view
@@ -36,18 +32,15 @@ Deno.serve(async (req) => {
       .eq("slug", slug)
       .maybeSingle();
 
-    console.log("Query result:", { article, error });
-
     if (error) {
-      console.error("Database error:", error);
-      return new Response(JSON.stringify({ error: "Database error", details: error.message }), {
+      return new Response(JSON.stringify({ error: "Database error" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if (!article) {
-      return new Response(JSON.stringify({ error: "Article not found", slug }), {
+      return new Response(JSON.stringify({ error: "Article not found" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
