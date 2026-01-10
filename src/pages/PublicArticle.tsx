@@ -51,9 +51,9 @@ const PublicArticle = () => {
     .trim()
     .substring(0, 160) || 'Read this article on YON - Your Own Notebook';
 
-  const siteUrl = 'https://yon.lovable.app';
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://yon.lovable.app';
   const articleUrl = `${siteUrl}/read/${article?.slug}`;
-  const ogImageUrl = `${siteUrl}/og-image.png`;
+  const ogImageUrl = `${siteUrl}/og-image.png?v=2`;
 
   return (
     <>
