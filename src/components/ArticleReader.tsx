@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pencil, Copy, Check } from 'lucide-react';
+import { Pencil, Share2, Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { Article } from '@/hooks/useArticles';
 import { EditArticleModal } from '@/components/EditArticleModal';
@@ -52,7 +52,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                 className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Copy share link"
               >
-                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
               </button>
             )}
             <button
