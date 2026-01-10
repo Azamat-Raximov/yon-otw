@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ArrowLeft, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useArticleBySlug } from '@/hooks/useArticles';
 import { isValidImageUrl } from '@/lib/security';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -43,8 +44,34 @@ const PublicArticle = () => {
     );
   }
 
+  // Generate description from body (first 160 chars, strip markdown images)
+  const description = article?.body
+    ?.replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\n/g, ' ')
+    .trim()
+    .substring(0, 160) || 'Read this article on YON - Your Own Notebook';
+
+  const siteUrl = 'https://yon.lovable.app';
+  const articleUrl = `${siteUrl}/read/${article?.slug}`;
+  const ogImageUrl = `${siteUrl}/og-image.png`;
+
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Helmet>
+        <title>{article.title} - YON</title>
+        <meta name="description" content={description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={articleUrl} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:site_name" content="YON - Your Own Notebook" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImageUrl} />
+      </Helmet>
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-border">
         <Link
@@ -107,6 +134,7 @@ const PublicArticle = () => {
         </ScrollArea>
       </main>
     </div>
+    </>
   );
 };
 
