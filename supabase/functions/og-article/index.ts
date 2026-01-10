@@ -55,7 +55,8 @@ Deno.serve(async (req) => {
 
     const siteUrl = "https://yon-otw.lovable.app";
     const articleUrl = `${siteUrl}/read/${article.slug}`;
-    const ogImageUrl = `${siteUrl}/share-og.jpg?v=1`;
+    // No querystring here; some crawlers/hosts treat `?v=` as a different route and may return 404.
+    const ogImageUrl = `${siteUrl}/og-image.jpg`;
 
     return new Response(
       JSON.stringify({
