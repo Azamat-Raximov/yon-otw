@@ -112,6 +112,61 @@ export const useCreateArticle = () => {
   });
 };
 
+export const useRegenerateSlugs = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+      
+      // Get all articles without slugs
+      const { data: articles, error: fetchError } = await supabase
+        .from('articles')
+        .select('id, title')
+        .eq('user_id', user.id)
+        .is('slug', null);
+      
+      if (fetchError) throw fetchError;
+      if (!articles || articles.length === 0) return 0;
+      
+      let updatedCount = 0;
+      
+      for (const article of articles) {
+        const baseSlug = generateSlug(article.title);
+        let slug = baseSlug;
+        let counter = 0;
+        
+        // Check for uniqueness
+        while (true) {
+          const { data: existing } = await supabase
+            .from('articles')
+            .select('id')
+            .eq('slug', slug)
+            .neq('id', article.id)
+            .maybeSingle();
+          
+          if (!existing) break;
+          counter++;
+          slug = `${baseSlug}-${counter}`;
+        }
+        
+        const { error: updateError } = await supabase
+          .from('articles')
+          .update({ slug })
+          .eq('id', article.id);
+        
+        if (!updateError) updatedCount++;
+      }
+      
+      return updatedCount;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['articles'] });
+    },
+  });
+};
+
 export const useUpdateArticle = () => {
   const queryClient = useQueryClient();
   
