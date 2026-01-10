@@ -1,6 +1,8 @@
 # Netlify-style redirects for SPA
-# Some crawlers still request /og-image.png; force it to the current asset.
-/og-image.png   /og-image.jpg   301!
+# Old OG filenames -> latest OG asset
+/og-image.png     /og-image-v2.png   301!
+/og-image.jpg     /og-image-v2.png   301!
+/share-og.jpg     /og-image-v2.png   301!
 
 # All routes should fall through to index.html for client-side routing
 /*    /index.html   200
