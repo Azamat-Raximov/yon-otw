@@ -75,7 +75,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_articles: {
+        Row: {
+          body: string | null
+          created_at: string | null
+          id: string | null
+          playlist_id: string | null
+          slug: string | null
+          title: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string | null
+          id?: string | null
+          playlist_id?: string | null
+          slug?: string | null
+          title?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string | null
+          id?: string | null
+          playlist_id?: string | null
+          slug?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "playlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       generate_slug: { Args: { title: string }; Returns: string }
