@@ -53,8 +53,8 @@ const PublicArticle = () => {
 
   const siteUrl = "https://yon-otw.lovable.app";
   const articleUrl = `${siteUrl}/read/${article?.slug}`;
-  // Use a new filename + version to force social platforms to refetch the image.
-  const ogImageUrl = `${siteUrl}/share-og.jpg?v=1`;
+  // NOTE: no querystring here; some crawlers/hosts treat `?v=` as a different route and return 404.
+  const ogImageUrl = `${siteUrl}/og-image.jpg`;
 
   return (
     <>
