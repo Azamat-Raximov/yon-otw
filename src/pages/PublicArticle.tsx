@@ -53,7 +53,7 @@ const PublicArticle = () => {
 
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://yon-otw.lovable.app';
   const articleUrl = `${siteUrl}/read/${article?.slug}`;
-  const ogImageUrl = `${siteUrl}/og-image.png?v=3`;
+  const ogImageUrl = "https://i.pinimg.com/736x/b4/82/f5/b482f53499526dd833bc277d2e71ebad.jpg";
 
   return (
     <>
