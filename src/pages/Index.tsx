@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, RefreshCw } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { PlaylistTabs } from '@/components/PlaylistTabs';
 import { ArticleSidebar } from '@/components/ArticleSidebar';
 import { ArticleReader } from '@/components/ArticleReader';
 import { FloatingCreateButton } from '@/components/FloatingCreateButton';
 import { AuthGuard } from '@/components/AuthGuard';
-import { useArticles } from '@/hooks/useArticles';
+import { useArticles, useRegenerateSlugs } from '@/hooks/useArticles';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { toast } from 'sonner';
 
 const Index = () => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
@@ -18,7 +19,19 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const { data: articles, isLoading } = useArticles(selectedPlaylistId ?? undefined);
+  const regenerateSlugs = useRegenerateSlugs();
   
+  // Check if any articles are missing slugs
+  const articlesWithoutSlugs = articles?.filter(a => !a.slug).length ?? 0;
+
+  const handleRegenerateSlugs = async () => {
+    try {
+      const count = await regenerateSlugs.mutateAsync();
+      toast.success(`Generated slugs for ${count} article${count === 1 ? '' : 's'}`);
+    } catch {
+      toast.error('Failed to generate slugs');
+    }
+  };
   // Auto-select the first (latest) article when articles load
   useEffect(() => {
     if (articles && articles.length > 0 && !selectedArticleId) {
@@ -41,7 +54,21 @@ const Index = () => {
   const sidebarContent = (
     <>
       <div className="p-4 border-b border-border">
-        <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors mb-4 block">YON</Link>
+        <div className="flex items-center justify-between mb-4">
+          <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors">YON</Link>
+          {articlesWithoutSlugs > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRegenerateSlugs}
+              disabled={regenerateSlugs.isPending}
+              className="font-mono text-xs gap-1"
+            >
+              <RefreshCw className={`w-3 h-3 ${regenerateSlugs.isPending ? 'animate-spin' : ''}`} />
+              {regenerateSlugs.isPending ? 'Generating...' : `Fix ${articlesWithoutSlugs} link${articlesWithoutSlugs === 1 ? '' : 's'}`}
+            </Button>
+          )}
+        </div>
         <Header 
           showSearch 
           searchQuery={searchQuery} 
