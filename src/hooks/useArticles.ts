@@ -91,27 +91,33 @@ export const useCreateArticle = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
       
-      // Generate a unique slug
+      // Generate a unique slug with retry logic to handle race conditions
       const baseSlug = generateSlug(title);
-      let slug = baseSlug;
-      let counter = 0;
+      const MAX_RETRIES = 5;
       
-      // Check for uniqueness
-      while (true) {
-        const { data: existing } = await supabase
-          .from('articles')
-          .select('id')
-          .eq('slug', slug)
-          .maybeSingle();
+      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt}`;
         
-        if (!existing) break;
-        counter++;
-        slug = `${baseSlug}-${counter}`;
+        const { data, error } = await supabase
+          .from('articles')
+          .insert({ title, body, playlist_id, user_id: user.id, slug })
+          .select()
+          .single();
+        
+        // If duplicate key violation (code 23505), retry with incremented suffix
+        if (error?.code === '23505') {
+          continue;
+        }
+        
+        if (error) throw error;
+        return data;
       }
       
+      // Fallback: use timestamp-based suffix to guarantee uniqueness
+      const fallbackSlug = `${baseSlug}-${Date.now()}`;
       const { data, error } = await supabase
         .from('articles')
-        .insert({ title, body, playlist_id, user_id: user.id, slug })
+        .insert({ title, body, playlist_id, user_id: user.id, slug: fallbackSlug })
         .select()
         .single();
       
@@ -143,32 +149,42 @@ export const useRegenerateSlugs = () => {
       if (!articles || articles.length === 0) return 0;
       
       let updatedCount = 0;
+      const MAX_RETRIES = 5;
       
       for (const article of articles) {
         const baseSlug = generateSlug(article.title);
-        let slug = baseSlug;
-        let counter = 0;
+        let success = false;
         
-        // Check for uniqueness
-        while (true) {
-          const { data: existing } = await supabase
-            .from('articles')
-            .select('id')
-            .eq('slug', slug)
-            .neq('id', article.id)
-            .maybeSingle();
+        // Retry loop to handle race conditions
+        for (let attempt = 0; attempt < MAX_RETRIES && !success; attempt++) {
+          const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt}`;
           
-          if (!existing) break;
-          counter++;
-          slug = `${baseSlug}-${counter}`;
+          const { error: updateError } = await supabase
+            .from('articles')
+            .update({ slug })
+            .eq('id', article.id);
+          
+          // If duplicate key violation (code 23505), retry with incremented suffix
+          if (updateError?.code === '23505') {
+            continue;
+          }
+          
+          if (!updateError) {
+            updatedCount++;
+            success = true;
+          }
         }
         
-        const { error: updateError } = await supabase
-          .from('articles')
-          .update({ slug })
-          .eq('id', article.id);
-        
-        if (!updateError) updatedCount++;
+        // Fallback: use timestamp-based suffix to guarantee uniqueness
+        if (!success) {
+          const fallbackSlug = `${baseSlug}-${Date.now()}`;
+          const { error: updateError } = await supabase
+            .from('articles')
+            .update({ slug: fallbackSlug })
+            .eq('id', article.id);
+          
+          if (!updateError) updatedCount++;
+        }
       }
       
       return updatedCount;
