@@ -3,7 +3,7 @@ import { Pencil, Share2, Check, BookOpen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Article, useUpdateArticle, useDeleteArticle } from '@/hooks/useArticles';
 import { usePlaylists } from '@/hooks/usePlaylists';
-import { isValidImageUrl } from '@/lib/security';
+import { parseMarkdownContent } from '@/lib/parseMarkdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -267,24 +267,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
             </div>
           ) : (
             <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-              {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
-                const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
-                if (imageMatch && isValidImageUrl(imageMatch[2])) {
-                  return (
-                    <img
-                      key={index}
-                      src={imageMatch[2]}
-                      alt={imageMatch[1] || 'Article image'}
-                      className="max-w-full h-auto rounded-lg my-4"
-                      referrerPolicy="no-referrer"
-                    />
-                  );
-                }
-                if (imageMatch) {
-                  return <span key={index}>{part}</span>;
-                }
-                return <span key={index}>{part}</span>;
-              })}
+              {parseMarkdownContent(article.body)}
             </div>
           )}
         </div>
