@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Pencil, Share2, Check, BookOpen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Article, useUpdateArticle, useDeleteArticle } from '@/hooks/useArticles';
 import { usePlaylists } from '@/hooks/usePlaylists';
 import { parseMarkdownContent } from '@/lib/parseMarkdown';
+import { HighlightToolbar } from '@/components/HighlightToolbar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,6 +20,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   
   // Edit state
   const [editTitle, setEditTitle] = useState('');
@@ -174,6 +176,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
           {isEditing ? (
             <div className="space-y-6">
               <Textarea
+                ref={textareaRef}
                 value={editBody}
                 onChange={(e) => setEditBody(e.target.value)}
                 onKeyDown={(e) => {
@@ -192,6 +195,12 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                 }}
                 className="font-serif text-lg leading-relaxed min-h-[400px] border-none shadow-none p-0 focus-visible:ring-0 bg-transparent resize-none"
                 placeholder="Write your article..."
+              />
+              
+              <HighlightToolbar 
+                textareaRef={textareaRef} 
+                value={editBody} 
+                onChange={setEditBody} 
               />
 
               <div className="space-y-2">

@@ -23,17 +23,24 @@ export const parseMarkdownContent = (text: string): React.ReactNode[] => {
       return <span key={index}>{part}</span>;
     }
     
-    // Parse bold text *text*
-    const boldParts = part.split(/(\*[^*]+\*)/g);
+    // Parse highlight text ==text==
+    const highlightParts = part.split(/(==[^=]+==[^=]*|==[^=]+==)/g);
     
     return (
       <span key={index}>
-        {boldParts.map((boldPart, boldIndex) => {
-          const boldMatch = boldPart.match(/^\*([^*]+)\*$/);
-          if (boldMatch) {
-            return <strong key={boldIndex}>{boldMatch[1]}</strong>;
+        {highlightParts.map((highlightPart, highlightIndex) => {
+          const highlightMatch = highlightPart.match(/^==([^=]+)==$/);
+          if (highlightMatch) {
+            return (
+              <mark 
+                key={highlightIndex} 
+                className="bg-yellow-300 dark:bg-yellow-500/50 px-0.5 rounded-sm"
+              >
+                {highlightMatch[1]}
+              </mark>
+            );
           }
-          return boldPart;
+          return highlightPart;
         })}
       </span>
     );
