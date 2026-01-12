@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AuthGuard } from '@/components/AuthGuard';
 import { SlashCommandMenu } from '@/components/SlashCommandMenu';
+import { HighlightToolbar } from '@/components/HighlightToolbar';
 import { usePlaylists, useCreatePlaylist } from '@/hooks/usePlaylists';
 import { useCreateArticle } from '@/hooks/useArticles';
 import { toast } from 'sonner';
@@ -164,6 +165,12 @@ const CreateArticleContent = () => {
           onKeyDown={handleKeyDown}
           placeholder="Start writing... (type / to add an image)"
           className="w-full bg-transparent border-none outline-none font-serif text-lg leading-relaxed placeholder:text-muted-foreground/50 resize-none min-h-[60vh]"
+        />
+        
+        <HighlightToolbar 
+          textareaRef={textareaRef} 
+          value={body} 
+          onChange={setBody} 
         />
       </main>
 
