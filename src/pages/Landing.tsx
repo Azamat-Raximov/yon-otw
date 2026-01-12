@@ -12,7 +12,7 @@ const Landing = () => {
         <meta name="description" content="YON is a free, minimal, distraction-free online notebook for capturing ideas, writing notes, and organizing your thoughts. Access your notes anywhere, anytime." />
         <link rel="canonical" href="https://yon-otw.lovable.app/" />
       </Helmet>
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-background">
         <header className="flex items-center justify-between px-6 py-4 max-w-4xl mx-auto animate-fade-in">
           <h1 className="text-xl font-semibold text-foreground">YON</h1>
           <nav className="flex items-center gap-4" aria-label="Main navigation">
@@ -23,7 +23,7 @@ const Landing = () => {
           </nav>
         </header>
 
-        <main className="max-w-4xl mx-auto px-6 py-24 flex-1">
+        <main className="max-w-4xl mx-auto px-6 py-24">
           <section className="text-center space-y-6 mb-20 animate-fade-in-up" style={{ animationDelay: '0.1s' }} aria-labelledby="hero-heading">
             <h2 id="hero-heading" className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
               Your Own Notebook
