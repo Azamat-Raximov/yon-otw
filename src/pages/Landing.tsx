@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Lock, Globe } from 'lucide-react';
+import { Share2, Lock, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Landing = () => {
@@ -49,11 +49,11 @@ const Landing = () => {
 
             <article className="space-y-3 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto" aria-hidden="true">
-                <BookOpen className="w-6 h-6 text-primary" />
+                <Share2 className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="font-semibold text-foreground">Simple Writing</h3>
+              <h3 className="font-semibold text-foreground">Share Your Notes</h3>
               <p className="text-sm text-muted-foreground">
-                Focus on what matters. Clean interface with dark and light modes for comfortable writing.
+                Generate shareable links for any note. Share read-only versions while keeping full control.
               </p>
             </article>
 
