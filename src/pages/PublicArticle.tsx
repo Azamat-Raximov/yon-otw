@@ -4,7 +4,7 @@ import { ArrowLeft, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useArticleBySlug } from '@/hooks/useArticles';
-import { isValidImageUrl } from '@/lib/security';
+import { parseMarkdownContent } from '@/lib/parseMarkdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -143,24 +143,7 @@ const PublicArticle = () => {
                 className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" 
                 style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
               >
-                {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
-                  const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
-                  if (imageMatch && isValidImageUrl(imageMatch[2])) {
-                    return (
-                      <img
-                        key={index}
-                        src={imageMatch[2]}
-                        alt={imageMatch[1] || 'Article image'}
-                        className="max-w-full h-auto rounded-lg my-4"
-                        referrerPolicy="no-referrer"
-                      />
-                    );
-                  }
-                  if (imageMatch) {
-                    return <span key={index}>{part}</span>;
-                  }
-                  return <span key={index}>{part}</span>;
-                })}
+                {parseMarkdownContent(article.body)}
               </div>
             </div>
           </article>
