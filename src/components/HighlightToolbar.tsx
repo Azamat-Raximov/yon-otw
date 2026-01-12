@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Highlighter } from 'lucide-react';
 
 interface HighlightToolbarProps {
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   value: string;
   onChange: (value: string) => void;
 }
@@ -10,6 +10,7 @@ interface HighlightToolbarProps {
 export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightToolbarProps) => {
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
   const toolbarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,15 +22,13 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
       const end = textarea.selectionEnd;
       
       if (start !== end) {
-        // Get position for toolbar
+        setSelection({ start, end });
+        
+        // Get position for toolbar - position it above the textarea
         const rect = textarea.getBoundingClientRect();
-        const textBeforeSelection = value.substring(0, start);
-        const lines = textBeforeSelection.split('\n');
-        const lineHeight = 28;
-        const lineNumber = lines.length - 1;
         
         setPosition({
-          top: rect.top + window.scrollY + (lineNumber * lineHeight) - 40,
+          top: rect.top + window.scrollY - 50,
           left: rect.left + window.scrollX + 16,
         });
         setVisible(true);
@@ -48,14 +47,23 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
       }
     };
 
+    // Also handle selection change via document
+    const handleSelectionChange = () => {
+      if (document.activeElement === textarea) {
+        handleSelection();
+      }
+    };
+
     textarea.addEventListener('mouseup', handleMouseUp);
     textarea.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('selectionchange', handleSelectionChange);
     
     return () => {
       textarea.removeEventListener('mouseup', handleMouseUp);
       textarea.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('selectionchange', handleSelectionChange);
     };
-  }, [textareaRef, value]);
+  }, [textareaRef]);
 
   // Hide toolbar when clicking outside
   useEffect(() => {
@@ -72,19 +80,21 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [textareaRef]);
 
-  const handleHighlight = () => {
+  const handleHighlight = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
+    const { start, end } = selection;
     const selectedText = value.substring(start, end);
 
     if (selectedText) {
-      // Check if already highlighted
       const before = value.substring(0, start);
       const after = value.substring(end);
       
+      // Check if already highlighted
       if (before.endsWith('==') && after.startsWith('==')) {
         // Remove highlight
         const newValue = before.slice(0, -2) + selectedText + after.slice(2);
@@ -95,7 +105,11 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
         onChange(newValue);
       }
       setVisible(false);
-      textarea.focus();
+      
+      // Refocus textarea
+      setTimeout(() => {
+        textarea.focus();
+      }, 10);
     }
   };
 
@@ -109,7 +123,7 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
     >
       <button
         type="button"
-        onClick={handleHighlight}
+        onMouseDown={handleHighlight}
         className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-accent transition-colors font-mono text-xs"
       >
         <Highlighter className="w-4 h-4 text-yellow-500" />
