@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { HighlightToolbar } from '@/components/HighlightToolbar';
 import { usePlaylists } from '@/hooks/usePlaylists';
 import { useUpdateArticle, useDeleteArticle, Article } from '@/hooks/useArticles';
 import { toast } from 'sonner';
@@ -20,6 +21,7 @@ export const EditArticleModal = ({ article, open, onOpenChange }: EditArticleMod
   const [body, setBody] = useState('');
   const [playlistId, setPlaylistId] = useState<string>('none');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { data: playlists } = usePlaylists();
   const updateArticle = useUpdateArticle();
@@ -113,6 +115,7 @@ export const EditArticleModal = ({ article, open, onOpenChange }: EditArticleMod
             <div className="space-y-2">
               <Label htmlFor="edit-body" className="font-mono text-xs uppercase tracking-wide">Body</Label>
               <Textarea
+                ref={textareaRef}
                 id="edit-body"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
@@ -133,6 +136,8 @@ export const EditArticleModal = ({ article, open, onOpenChange }: EditArticleMod
                 className="font-mono text-sm min-h-[200px]"
                 placeholder="Write your article..."
               />
+
+              <HighlightToolbar textareaRef={textareaRef} value={body} onChange={setBody} />
             </div>
 
             <div className="space-y-2">
