@@ -116,6 +116,20 @@ export const EditArticleModal = ({ article, open, onOpenChange }: EditArticleMod
                 id="edit-body"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const target = e.target as HTMLTextAreaElement;
+                    const start = target.selectionStart;
+                    const end = target.selectionEnd;
+                    const spaces = '    ';
+                    const newValue = body.substring(0, start) + spaces + body.substring(end);
+                    setBody(newValue);
+                    setTimeout(() => {
+                      target.selectionStart = target.selectionEnd = start + spaces.length;
+                    }, 0);
+                  }
+                }}
                 className="font-mono text-sm min-h-[200px]"
                 placeholder="Write your article..."
               />
