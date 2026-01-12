@@ -1,10 +1,14 @@
-import { useState } from 'react';
-import { Pencil, Share2, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Pencil, Share2, Check, BookOpen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { Article } from '@/hooks/useArticles';
-import { EditArticleModal } from '@/components/EditArticleModal';
+import { Article, useUpdateArticle, useDeleteArticle } from '@/hooks/useArticles';
+import { usePlaylists } from '@/hooks/usePlaylists';
 import { isValidImageUrl } from '@/lib/security';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 interface ArticleReaderProps {
@@ -12,8 +16,33 @@ interface ArticleReaderProps {
 }
 
 export const ArticleReader = ({ article }: ArticleReaderProps) => {
-  const [editOpen, setEditOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  
+  // Edit state
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const [editPlaylistId, setEditPlaylistId] = useState<string>('none');
+
+  const { data: playlists } = usePlaylists();
+  const updateArticle = useUpdateArticle();
+  const deleteArticle = useDeleteArticle();
+
+  // Sync edit state when article changes or edit mode starts
+  useEffect(() => {
+    if (article) {
+      setEditTitle(article.title);
+      setEditBody(article.body);
+      setEditPlaylistId(article.playlist_id || 'none');
+    }
+  }, [article]);
+
+  // Reset edit mode when article changes
+  useEffect(() => {
+    setIsEditing(false);
+    setShowDeleteConfirm(false);
+  }, [article?.id]);
 
   const handleCopyLink = async () => {
     if (!article?.slug) {
@@ -21,7 +50,6 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
       return;
     }
     
-    // Always copy a stable, public URL (the editor/preview domain may not generate social previews)
     const shareUrl = `https://yon-otw.lovable.app/read/${article.slug}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -31,6 +59,58 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
     } catch {
       toast.error('Failed to copy link');
     }
+  };
+
+  const handleStartEditing = () => {
+    if (article) {
+      setEditTitle(article.title);
+      setEditBody(article.body);
+      setEditPlaylistId(article.playlist_id || 'none');
+      setIsEditing(true);
+    }
+  };
+
+  const handleSaveAndClose = async () => {
+    if (!article || !editTitle.trim() || !editBody.trim()) {
+      toast.error('Please fill in title and body');
+      return;
+    }
+
+    try {
+      await updateArticle.mutateAsync({
+        id: article.id,
+        title: editTitle.trim(),
+        body: editBody.trim(),
+        playlist_id: editPlaylistId === 'none' ? null : editPlaylistId,
+      });
+      toast.success('Article updated');
+      setIsEditing(false);
+    } catch (error) {
+      toast.error('Failed to update article');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!article) return;
+
+    try {
+      await deleteArticle.mutateAsync(article.id);
+      toast.success('Article deleted');
+      setShowDeleteConfirm(false);
+      setIsEditing(false);
+    } catch (error) {
+      toast.error('Failed to delete article');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    if (article) {
+      setEditTitle(article.title);
+      setEditBody(article.body);
+      setEditPlaylistId(article.playlist_id || 'none');
+    }
+    setIsEditing(false);
+    setShowDeleteConfirm(false);
   };
 
   if (!article) {
@@ -45,9 +125,18 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
     <ScrollArea className="h-[calc(100vh-120px)]">
       <article className="pr-6 pb-12 animate-fade-in">
         <div className="flex items-start justify-between gap-4 mb-4">
-          <h1 className="font-serif text-3xl">{article.title}</h1>
+          {isEditing ? (
+            <Input
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              className="font-serif text-3xl border-none shadow-none p-0 h-auto focus-visible:ring-0 bg-transparent"
+              placeholder="Article title"
+            />
+          ) : (
+            <h1 className="font-serif text-3xl">{article.title}</h1>
+          )}
           <div className="flex items-center gap-1 shrink-0">
-            {article.slug && (
+            {article.slug && !isEditing && (
               <button
                 onClick={handleCopyLink}
                 className="p-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -56,13 +145,24 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                 {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
               </button>
             )}
-            <button
-              onClick={() => setEditOpen(true)}
-              className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Edit article"
-            >
-              <Pencil className="w-4 h-4" />
-            </button>
+            {isEditing ? (
+              <button
+                onClick={handleSaveAndClose}
+                disabled={updateArticle.isPending}
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Save and close editing"
+              >
+                <BookOpen className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={handleStartEditing}
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Edit article"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
         
@@ -71,34 +171,124 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
         </time>
         
         <div className="mt-8">
-          <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-            {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
-              const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
-              if (imageMatch && isValidImageUrl(imageMatch[2])) {
-                return (
-                  <img
-                    key={index}
-                    src={imageMatch[2]}
-                    alt={imageMatch[1] || 'Article image'}
-                    className="max-w-full h-auto rounded-lg my-4"
-                    referrerPolicy="no-referrer"
-                  />
-                );
-              }
-              if (imageMatch) {
+          {isEditing ? (
+            <div className="space-y-6">
+              <Textarea
+                value={editBody}
+                onChange={(e) => setEditBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const target = e.target as HTMLTextAreaElement;
+                    const start = target.selectionStart;
+                    const end = target.selectionEnd;
+                    const spaces = '    ';
+                    const newValue = editBody.substring(0, start) + spaces + editBody.substring(end);
+                    setEditBody(newValue);
+                    setTimeout(() => {
+                      target.selectionStart = target.selectionEnd = start + spaces.length;
+                    }, 0);
+                  }
+                }}
+                className="font-serif text-lg leading-relaxed min-h-[400px] border-none shadow-none p-0 focus-visible:ring-0 bg-transparent resize-none"
+                placeholder="Write your article..."
+              />
+
+              <div className="space-y-2">
+                <label className="font-mono text-xs uppercase tracking-wide text-muted-foreground">Playlist</label>
+                <Select value={editPlaylistId} onValueChange={setEditPlaylistId}>
+                  <SelectTrigger className="font-mono text-sm w-48">
+                    <SelectValue placeholder="Select playlist" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No playlist</SelectItem>
+                    {playlists?.map((playlist) => (
+                      <SelectItem key={playlist.id} value={playlist.id}>
+                        {playlist.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {showDeleteConfirm ? (
+                <div className="flex items-center gap-4 pt-4 border-t">
+                  <p className="font-serif text-sm text-foreground/80">Delete this article?</p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="font-mono text-xs"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleDelete}
+                    disabled={deleteArticle.isPending}
+                    className="font-mono text-xs"
+                  >
+                    {deleteArticle.isPending ? '...' : 'Delete'}
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4 pt-4 border-t">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="p-2 text-destructive hover:text-destructive/80 transition-colors"
+                    aria-label="Delete article"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelEdit}
+                    className="font-mono text-xs ml-auto"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleSaveAndClose}
+                    disabled={updateArticle.isPending}
+                    className="font-mono text-xs uppercase tracking-wide"
+                  >
+                    {updateArticle.isPending ? '...' : 'Save'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+              {article.body.split(/(\!\[.*?\]\(.*?\))/).map((part, index) => {
+                const imageMatch = part.match(/^\!\[(.*?)\]\((.*?)\)$/);
+                if (imageMatch && isValidImageUrl(imageMatch[2])) {
+                  return (
+                    <img
+                      key={index}
+                      src={imageMatch[2]}
+                      alt={imageMatch[1] || 'Article image'}
+                      className="max-w-full h-auto rounded-lg my-4"
+                      referrerPolicy="no-referrer"
+                    />
+                  );
+                }
+                if (imageMatch) {
+                  return <span key={index}>{part}</span>;
+                }
                 return <span key={index}>{part}</span>;
-              }
-              return <span key={index}>{part}</span>;
-            })}
-          </div>
+              })}
+            </div>
+          )}
         </div>
       </article>
-
-      <EditArticleModal
-        article={article}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-      />
     </ScrollArea>
   );
 };
