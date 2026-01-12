@@ -73,6 +73,25 @@ const CreateArticleContent = () => {
     textareaRef.current?.focus();
   }, [body, slashIndex]);
 
+  // Handle Tab key for indentation (hoshiya)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const target = e.target as HTMLTextAreaElement;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+      const spaces = '    '; // 4 spaces for indentation
+      
+      const newValue = body.substring(0, start) + spaces + body.substring(end);
+      setBody(newValue);
+      
+      // Move cursor after inserted spaces
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + spaces.length;
+      }, 0);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!title.trim() || !body.trim()) {
       toast.error('Please fill in title and body');
@@ -142,6 +161,7 @@ const CreateArticleContent = () => {
           ref={textareaRef}
           value={body}
           onChange={handleBodyChange}
+          onKeyDown={handleKeyDown}
           placeholder="Start writing... (type / to add an image)"
           className="w-full bg-transparent border-none outline-none font-serif text-lg leading-relaxed placeholder:text-muted-foreground/50 resize-none min-h-[60vh]"
         />
