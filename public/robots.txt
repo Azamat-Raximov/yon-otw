@@ -1,7 +1,27 @@
+# YON - Your Own Notebook
+# https://yon-otw.lovable.app
+
+User-agent: *
+Allow: /
+Allow: /read/
+
+# Disallow private app routes
+Disallow: /app
+Disallow: /app/
+Disallow: /create
+Disallow: /article/
+
+# Sitemap
+Sitemap: https://yon-otw.lovable.app/sitemap.xml
+
+# Crawl-delay for polite crawling
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
 Allow: /
 
 User-agent: Twitterbot
@@ -10,5 +30,8 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
 Allow: /

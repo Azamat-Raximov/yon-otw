@@ -56,21 +56,53 @@ const PublicArticle = () => {
   // Use a new filename (no querystring) to force social platforms to refetch the image.
   const ogImageUrl = `${siteUrl}/og-image-v2.png`;
 
+  // JSON-LD structured data for article
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "description": description,
+    "url": articleUrl,
+    "image": ogImageUrl,
+    "datePublished": article.created_at,
+    "dateModified": article.created_at,
+    "publisher": {
+      "@type": "Organization",
+      "name": "YON - Your Own Notebook",
+      "url": siteUrl
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": articleUrl
+    }
+  };
+
   return (
     <>
       <Helmet>
-        <title>{article.title} - YON</title>
+        <title>{article.title} - YON | Your Own Notebook</title>
         <meta name="description" content={description} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={articleUrl} />
+        
         <meta property="og:type" content="article" />
         <meta property="og:url" content={articleUrl} />
-        <meta property="og:title" content={article.title} />
+        <meta property="og:title" content={`${article.title} - YON`} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="YON - Your Own Notebook" />
+        <meta property="article:published_time" content={article.created_at} />
+        
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:title" content={`${article.title} - YON`} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImageUrl} />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(articleJsonLd)}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-background">
       {/* Header */}
