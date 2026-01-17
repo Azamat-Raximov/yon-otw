@@ -11,7 +11,17 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const lastMousePos = useRef({ x: 0, y: 0 });
   const toolbarRef = useRef<HTMLDivElement>(null);
+
+  // Track mouse position globally
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      lastMousePos.current = { x: e.clientX, y: e.clientY };
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -24,12 +34,10 @@ export const HighlightToolbar = ({ textareaRef, value, onChange }: HighlightTool
       if (start !== end) {
         setSelection({ start, end });
         
-        // Get position for toolbar - position it above the textarea
-        const rect = textarea.getBoundingClientRect();
-        
+        // Position toolbar near the mouse cursor
         setPosition({
-          top: rect.top + window.scrollY - 50,
-          left: rect.left + window.scrollX + 16,
+          top: lastMousePos.current.y + window.scrollY - 50,
+          left: lastMousePos.current.x + window.scrollX - 40,
         });
         setVisible(true);
       } else {
