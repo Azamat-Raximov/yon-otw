@@ -157,13 +157,22 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                 <BookOpen className="w-4 h-4" />
               </button>
             ) : (
-              <button
-                onClick={handleStartEditing}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Edit article"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
+              <>
+                <button
+                  onClick={handleStartEditing}
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Edit article"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                  aria-label="Delete article"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -273,6 +282,29 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                   </Button>
                 </div>
               )}
+            </div>
+          ) : showDeleteConfirm ? (
+            <div className="flex items-center gap-4 p-4 border border-destructive/20 rounded-lg bg-destructive/5">
+              <p className="font-serif text-sm text-foreground/80">Delete this article?</p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="font-mono text-xs"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                disabled={deleteArticle.isPending}
+                className="font-mono text-xs"
+              >
+                {deleteArticle.isPending ? '...' : 'Delete'}
+              </Button>
             </div>
           ) : (
             <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
