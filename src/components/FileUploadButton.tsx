@@ -13,21 +13,10 @@ export const FileUploadButton = ({ playlistId }: FileUploadButtonProps) => {
   const createArticle = useCreateArticle();
 
   const parseFileContent = (content: string, fileName: string): { title: string; body: string } => {
-    const lines = content.trim().split('\n');
-    
-    // Try to extract title from markdown heading or first line
-    let title = fileName.replace(/\.(md|txt)$/i, '');
-    let body = content;
-
-    // Check for markdown heading
-    if (lines[0]?.startsWith('# ')) {
-      title = lines[0].replace(/^#\s+/, '').trim();
-      body = lines.slice(1).join('\n').trim();
-    } else if (lines[0] && lines[0].length < 100) {
-      // Use first line as title if it's short enough
-      title = lines[0].trim();
-      body = lines.slice(1).join('\n').trim();
-    }
+    // Always use filename as title (without extension)
+    const title = fileName.replace(/\.(md|txt)$/i, '');
+    // Use entire file content as body
+    const body = content.trim();
 
     return { title, body };
   };
