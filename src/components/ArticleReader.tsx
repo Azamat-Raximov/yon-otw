@@ -141,7 +141,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
             {article.slug && !isEditing && (
               <button
                 onClick={handleCopyLink}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
                 aria-label="Copy share link"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
@@ -151,7 +151,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
               <button
                 onClick={handleSaveAndClose}
                 disabled={updateArticle.isPending}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
                 aria-label="Save and close editing"
               >
                 <BookOpen className="w-4 h-4" />
@@ -160,14 +160,14 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
               <>
                 <button
                   onClick={handleStartEditing}
-                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
                   aria-label="Edit article"
                 >
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                  className="p-2 text-muted-foreground hover:text-destructive transition-colors icon-btn"
                   aria-label="Delete article"
                 >
                   <Trash2 className="w-4 h-4" />
