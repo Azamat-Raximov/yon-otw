@@ -19,6 +19,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   
@@ -176,13 +177,27 @@ const Index = () => {
           </div>
 
           {/* Desktop Sidebar */}
-          <aside className="hidden md:flex w-72 border-r border-border flex-col shrink-0">
+          <aside 
+            className={`hidden md:flex border-r border-border flex-col shrink-0 transition-all duration-300 ease-out ${
+              desktopSidebarOpen ? 'w-72 opacity-100' : 'w-0 opacity-0 overflow-hidden'
+            }`}
+          >
             {sidebarContent}
           </aside>
           
           {/* Main content */}
-          <main className="flex-1 p-4 md:p-8 overflow-hidden pt-16 md:pt-8">
-            <ArticleReader article={selectedArticle} />
+          <main className="flex-1 p-4 md:p-8 overflow-hidden pt-16 md:pt-8 relative">
+            {/* Desktop hamburger toggle */}
+            <button
+              onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+              className="hidden md:flex absolute top-4 left-4 p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-all duration-200 icon-btn z-10"
+              aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <div className={`transition-all duration-300 ${desktopSidebarOpen ? '' : 'md:pl-12'}`}>
+              <ArticleReader article={selectedArticle} />
+            </div>
           </main>
         </div>
         
