@@ -151,7 +151,7 @@ const CreateArticleContent = () => {
       {/* Editor */}
       <main className="flex-1 max-w-2xl w-full mx-auto px-6 py-8 relative">
         {/* Vertical margin line */}
-        <div className="absolute right-0 top-0 bottom-0 w-2 bg-primary/60" />
+        <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-primary z-10" />
         <input
           type="text"
           value={title}
