@@ -83,7 +83,7 @@ export const FileUploadButton = ({ playlistId }: FileUploadButtonProps) => {
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={isUploading}
-        className="p-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+        className="p-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 icon-btn"
         aria-label="Import files"
         title="Import .md or .txt files"
       >

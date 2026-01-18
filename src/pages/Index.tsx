@@ -145,7 +145,7 @@ const Index = () => {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="w-full justify-start gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-200 hover:translate-x-1"
+              className="w-full justify-start gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-200 hover:translate-x-1 icon-btn"
             >
               <LogOut className="w-4 h-4" />
               Log out

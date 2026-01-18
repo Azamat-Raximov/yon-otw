@@ -158,3 +158,18 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Icon button press animation */
+  .icon-btn {
+    @apply transition-all duration-150 ease-out;
+  }
+  
+  .icon-btn:active {
+    @apply scale-90;
+  }
+  
+  .icon-btn:active svg {
+    @apply scale-95;
+  }
+}
