@@ -1,10 +1,6 @@
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { SearchBar } from '@/components/SearchBar';
 import { FileUploadButton } from '@/components/FileUploadButton';
-import { toast } from 'sonner';
-import { LogOut } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery?: string;
@@ -21,31 +17,15 @@ export const Header = ({
   selectedPlaylistId,
   compact = false 
 }: HeaderProps) => {
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error('Failed to log out');
-    }
-  };
-
   if (compact) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-3">
         {showSearch && onSearchChange && (
           <SearchBar value={searchQuery} onChange={onSearchChange} />
         )}
         <div className="flex items-center gap-2">
           <FileUploadButton playlistId={selectedPlaylistId} />
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className="font-mono text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-          >
-            <LogOut className="h-3 w-3" />
-            Logout
-          </Button>
         </div>
       </div>
     );
@@ -60,15 +40,6 @@ export const Header = ({
         )}
         <FileUploadButton playlistId={selectedPlaylistId} />
         <ThemeToggle />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLogout}
-          className="font-mono text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-        >
-          <LogOut className="h-3 w-3" />
-          Logout
-        </Button>
       </div>
     </header>
   );
