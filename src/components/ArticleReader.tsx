@@ -125,7 +125,9 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
 
   return (
     <ScrollArea className="h-[calc(100vh-120px)]">
-      <article className="pr-6 pb-12 animate-fade-in">
+      <article className="pr-6 pb-12 animate-fade-in relative">
+        {/* Vertical margin line */}
+        <div className="absolute right-0 top-0 bottom-0 w-px bg-border/30" />
         <div className="flex items-start justify-between gap-4 mb-4">
           {isEditing ? (
             <Input
