@@ -176,23 +176,35 @@ const Index = () => {
             </Sheet>
           </div>
 
-          {/* Desktop Sidebar Toggle - Fixed to top left */}
-          <button
-            onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
-            className="hidden md:flex fixed left-0 top-4 p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-r transition-all duration-200 icon-btn z-20 border-y border-r border-border bg-background"
-            aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-
           {/* Desktop Sidebar */}
           <aside 
             className={`hidden md:flex border-r border-border flex-col shrink-0 transition-all duration-300 ease-out ${
               desktopSidebarOpen ? 'w-72 opacity-100' : 'w-0 opacity-0 overflow-hidden'
             }`}
           >
+            {/* Sidebar Toggle at top of sidebar */}
+            <div className="p-2 border-b border-border">
+              <button
+                onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-all duration-200 icon-btn"
+                aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
             {sidebarContent}
           </aside>
+
+          {/* Sidebar toggle when sidebar is closed */}
+          {!desktopSidebarOpen && (
+            <button
+              onClick={() => setDesktopSidebarOpen(true)}
+              className="hidden md:flex fixed left-0 top-4 p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-r transition-all duration-200 icon-btn z-20 border-y border-r border-border bg-background"
+              aria-label="Show sidebar"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          )}
           
           {/* Main content */}
           <main className="flex-1 p-4 md:p-8 overflow-hidden pt-16 md:pt-8">
