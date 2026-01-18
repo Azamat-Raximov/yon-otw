@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, RefreshCw, LogOut, User } from 'lucide-react';
+import { Menu, RefreshCw, LogOut, User, ChevronUp } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { PlaylistTabs } from '@/components/PlaylistTabs';
 import { ArticleSidebar } from '@/components/ArticleSidebar';
@@ -115,32 +115,43 @@ const Index = () => {
       </div>
 
       {/* Account section at bottom */}
-      <div className="mt-auto border-t border-border">
+      <div className="mt-auto border-t border-border animate-fade-in">
         <button
           onClick={() => setShowAccountMenu(!showAccountMenu)}
-          className="w-full p-4 flex items-center gap-3 hover:bg-accent/50 transition-colors text-left"
+          className="w-full p-4 flex items-center gap-3 hover:bg-accent/50 transition-all duration-200 text-left group"
         >
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
             <User className="w-4 h-4 text-primary" />
           </div>
-          <span className="font-mono text-xs text-muted-foreground truncate flex-1">
+          <span className="font-mono text-xs text-muted-foreground truncate flex-1 transition-colors duration-200 group-hover:text-foreground">
             {userEmail ?? 'Account'}
           </span>
+          <ChevronUp 
+            className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${
+              showAccountMenu ? 'rotate-180' : 'rotate-0'
+            }`} 
+          />
         </button>
         
-        {showAccountMenu && (
+        <div 
+          className={`overflow-hidden transition-all duration-300 ease-out ${
+            showAccountMenu 
+              ? 'max-h-20 opacity-100' 
+              : 'max-h-0 opacity-0'
+          }`}
+        >
           <div className="px-4 pb-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="w-full justify-start gap-2 font-mono text-xs text-muted-foreground hover:text-foreground"
+              className="w-full justify-start gap-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-all duration-200 hover:translate-x-1"
             >
               <LogOut className="w-4 h-4" />
               Log out
             </Button>
           </div>
-        )}
+        </div>
       </div>
     </>
   );
