@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Pencil, Share2, Check, BookOpen, Trash2 } from 'lucide-react';
+import { Pencil, Share2, Check, X, Save, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Article, useUpdateArticle, useDeleteArticle } from '@/hooks/useArticles';
 import { usePlaylists } from '@/hooks/usePlaylists';
@@ -138,30 +138,43 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
             <h1 className="font-serif text-3xl">{article.title}</h1>
           )}
           <div className="flex items-center gap-1 shrink-0">
-            {article.slug && !isEditing && (
-              <button
-                onClick={handleCopyLink}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
-                aria-label="Copy share link"
-              >
-                {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-              </button>
-            )}
             {isEditing ? (
-              <button
-                onClick={handleSaveAndClose}
-                disabled={updateArticle.isPending}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
-                aria-label="Save and close editing"
-              >
-                <BookOpen className="w-4 h-4" />
-              </button>
+              <>
+                <button
+                  onClick={handleCancelEdit}
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
+                  aria-label="Cancel editing"
+                  title="Cancel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleSaveAndClose}
+                  disabled={updateArticle.isPending}
+                  className="p-2 text-primary hover:text-primary/80 transition-colors icon-btn"
+                  aria-label="Save changes"
+                  title="Save"
+                >
+                  <Save className="w-4 h-4" />
+                </button>
+              </>
             ) : (
               <>
+                {article.slug && (
+                  <button
+                    onClick={handleCopyLink}
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
+                    aria-label="Copy share link"
+                    title="Share"
+                  >
+                    {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                  </button>
+                )}
                 <button
                   onClick={handleStartEditing}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors icon-btn"
                   aria-label="Edit article"
+                  title="Edit"
                 >
                   <Pencil className="w-4 h-4" />
                 </button>
@@ -169,6 +182,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                   onClick={() => setShowDeleteConfirm(true)}
                   className="p-2 text-muted-foreground hover:text-destructive transition-colors icon-btn"
                   aria-label="Delete article"
+                  title="Delete"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -229,7 +243,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                 </Select>
               </div>
 
-              {showDeleteConfirm ? (
+              {showDeleteConfirm && (
                 <div className="flex items-center gap-4 pt-4 border-t">
                   <p className="font-serif text-sm text-foreground/80">Delete this article?</p>
                   <Button
@@ -250,35 +264,6 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
                     className="font-mono text-xs"
                   >
                     {deleteArticle.isPending ? '...' : 'Delete'}
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-4 pt-4 border-t">
-                  <button
-                    type="button"
-                    onClick={() => setShowDeleteConfirm(true)}
-                    className="p-2 text-destructive hover:text-destructive/80 transition-colors"
-                    aria-label="Delete article"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleCancelEdit}
-                    className="font-mono text-xs ml-auto"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    onClick={handleSaveAndClose}
-                    disabled={updateArticle.isPending}
-                    className="font-mono text-xs uppercase tracking-wide"
-                  >
-                    {updateArticle.isPending ? '...' : 'Save'}
                   </Button>
                 </div>
               )}
