@@ -19,11 +19,13 @@ export const Header = ({
 }: HeaderProps) => {
   if (compact) {
     return (
-      <div className="flex items-center justify-between gap-3">
-        {showSearch && onSearchChange && (
-          <SearchBar value={searchQuery} onChange={onSearchChange} />
-        )}
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          {showSearch && onSearchChange && (
+            <SearchBar value={searchQuery} onChange={onSearchChange} />
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
           <FileUploadButton playlistId={selectedPlaylistId} />
           <ThemeToggle />
         </div>
