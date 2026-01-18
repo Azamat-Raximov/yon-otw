@@ -124,10 +124,10 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh-120px)] relative">
-      {/* Vertical margin line */}
-      <div className="absolute right-16 top-0 bottom-0 w-1.5 bg-primary z-10" />
-      <article className="pr-20 pb-12 animate-fade-in">
+    <ScrollArea className="h-[calc(100vh-120px)]">
+      <article className="pr-6 pb-12 animate-fade-in relative">
+        {/* Vertical margin line - positioned where text should stop */}
+        <div className="absolute right-16 top-0 bottom-0 w-1.5 bg-primary z-10" />
         <div className="flex items-start justify-between gap-4 mb-4">
           {isEditing ? (
             <Input
@@ -294,7 +294,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
               </Button>
             </div>
           ) : (
-            <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+            <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden mr-14" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
               {parseMarkdownContent(article.body)}
             </div>
           )}
