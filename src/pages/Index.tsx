@@ -72,7 +72,16 @@ const Index = () => {
     <>
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
-          <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors">YON</Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+              className="hidden md:flex p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-all duration-200 icon-btn"
+              aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+            <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors">YON</Link>
+          </div>
           {articlesWithoutSlugs > 0 && (
             <Button
               variant="outline"
@@ -182,16 +191,6 @@ const Index = () => {
               desktopSidebarOpen ? 'w-72 opacity-100' : 'w-0 opacity-0 overflow-hidden'
             }`}
           >
-            {/* Sidebar Toggle at top of sidebar */}
-            <div className="p-2 border-b border-border">
-              <button
-                onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
-                className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-all duration-200 icon-btn"
-                aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-            </div>
             {sidebarContent}
           </aside>
 
