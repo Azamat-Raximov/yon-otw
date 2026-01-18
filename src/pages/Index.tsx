@@ -176,10 +176,10 @@ const Index = () => {
             </Sheet>
           </div>
 
-          {/* Desktop Sidebar Toggle - Fixed to left edge */}
+          {/* Desktop Sidebar Toggle - Fixed to top left */}
           <button
             onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
-            className="hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-r transition-all duration-200 icon-btn z-20 border-y border-r border-border bg-background"
+            className="hidden md:flex fixed left-0 top-4 p-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-r transition-all duration-200 icon-btn z-20 border-y border-r border-border bg-background"
             aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
           >
             <Menu className="h-5 w-5" />
