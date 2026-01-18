@@ -139,7 +139,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
           ) : (
             <h1 className="font-serif text-3xl">{article.title}</h1>
           )}
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1 shrink-0 absolute right-0 top-0">
             {isEditing ? (
               <>
                 <button
