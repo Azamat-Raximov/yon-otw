@@ -72,7 +72,20 @@ const Index = () => {
     <>
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
+          <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors">YON</Link>
           <div className="flex items-center gap-2">
+            {articlesWithoutSlugs > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRegenerateSlugs}
+                disabled={regenerateSlugs.isPending}
+                className="font-mono text-xs gap-1"
+              >
+                <RefreshCw className={`w-3 h-3 ${regenerateSlugs.isPending ? 'animate-spin' : ''}`} />
+                {regenerateSlugs.isPending ? 'Generating...' : `Fix ${articlesWithoutSlugs} link${articlesWithoutSlugs === 1 ? '' : 's'}`}
+              </Button>
+            )}
             <button
               onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
               className="hidden md:flex p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-all duration-200 icon-btn"
@@ -80,7 +93,6 @@ const Index = () => {
             >
               <Menu className="h-4 w-4" />
             </button>
-            <Link to="/" className="font-mono text-sm text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors">YON</Link>
           </div>
           {articlesWithoutSlugs > 0 && (
             <Button
