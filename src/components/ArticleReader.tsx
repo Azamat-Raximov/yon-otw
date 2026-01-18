@@ -294,7 +294,7 @@ export const ArticleReader = ({ article }: ArticleReaderProps) => {
               </Button>
             </div>
           ) : (
-            <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden mr-14" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+            <div className="font-serif text-foreground/80 whitespace-pre-wrap break-words leading-relaxed text-lg overflow-hidden mr-32" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
               {parseMarkdownContent(article.body)}
             </div>
           )}
