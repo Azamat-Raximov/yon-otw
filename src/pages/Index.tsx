@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, RefreshCw } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, RefreshCw, LogOut, User } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { PlaylistTabs } from '@/components/PlaylistTabs';
 import { ArticleSidebar } from '@/components/ArticleSidebar';
@@ -11,16 +11,27 @@ import { useArticles, useRegenerateSlugs } from '@/hooks/useArticles';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
   
   const { data: articles, isLoading } = useArticles(selectedPlaylistId ?? undefined);
   const regenerateSlugs = useRegenerateSlugs();
-  
+
+  // Get user email
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+  }, []);
+
   // Check if any articles are missing slugs
   const articlesWithoutSlugs = articles?.filter(a => !a.slug).length ?? 0;
 
@@ -31,6 +42,11 @@ const Index = () => {
     } catch {
       toast.error('Failed to generate slugs');
     }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
   };
   // Auto-select the first (latest) article when articles load
   useEffect(() => {
@@ -95,6 +111,35 @@ const Index = () => {
             onSelectArticle={handleSelectArticle}
             searchQuery={searchQuery}
           />
+        )}
+      </div>
+
+      {/* Account section at bottom */}
+      <div className="mt-auto border-t border-border">
+        <button
+          onClick={() => setShowAccountMenu(!showAccountMenu)}
+          className="w-full p-4 flex items-center gap-3 hover:bg-accent/50 transition-colors text-left"
+        >
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <User className="w-4 h-4 text-primary" />
+          </div>
+          <span className="font-mono text-xs text-muted-foreground truncate flex-1">
+            {userEmail ?? 'Account'}
+          </span>
+        </button>
+        
+        {showAccountMenu && (
+          <div className="px-4 pb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="w-full justify-start gap-2 font-mono text-xs text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="w-4 h-4" />
+              Log out
+            </Button>
+          </div>
         )}
       </div>
     </>

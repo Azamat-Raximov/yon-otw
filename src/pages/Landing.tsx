@@ -1,10 +1,45 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Share2, Lock, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { supabase } from '@/integrations/supabase/client';
 
 const Landing = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate('/app', { replace: true });
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        navigate('/app', { replace: true });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground text-sm">Loading...</p>
+      </div>
+    );
+  }
   return (
     <>
       <Helmet>
