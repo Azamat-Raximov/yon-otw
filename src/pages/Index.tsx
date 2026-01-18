@@ -91,7 +91,7 @@ const Index = () => {
               className="hidden md:flex p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-all duration-200 icon-btn"
               aria-label={desktopSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
             >
-              <Menu className="h-4 w-4" />
+              <Menu className="h-5 w-5" />
             </button>
           </div>
           {articlesWithoutSlugs > 0 && (
